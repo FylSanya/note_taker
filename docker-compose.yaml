@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mongo
+    hostname: note_taker_db
+    command: --quiet
+    restart: always
+    env_file: .env
+    ports:
+      - "27017:27017"
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    links:
+      - db

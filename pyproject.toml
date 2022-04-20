@@ -8,6 +8,9 @@ authors = ["Alexander Babaren <fffulls1zes@gmail.com>"]
 python = "^3.10"
 fastapi = "^0.75.2"
 uvicorn = "^0.17.6"
+pytest = "^7.1.1"
+motor = "^2.5.1"
+python-dotenv = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"

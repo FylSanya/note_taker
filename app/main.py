@@ -3,10 +3,21 @@ from fastapi import FastAPI
 from app.config import get_config
 from app.database import db
 from app.api import notes
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 app.include_router(notes.router, prefix="/api/notes")
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")

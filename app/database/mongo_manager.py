@@ -6,6 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from app.database import DatabaseManager
 from app.schemas import Note
+from app.schemas.notes import NoteDB
 from app.utils.object_id import OID
 from app.utils.logging import logger
 
@@ -47,7 +48,9 @@ class MongoManager(DatabaseManager):
         notes_list = []
         notes_q = self.db.notes.find()
         async for note in notes_q:
-            notes_list.append(Note(**note, id=note["_id"]))
+            print(note)
+            # del note['note_id']
+            notes_list.append(NoteDB(**note, note_id=note["_id"]))
         return notes_list
 
     async def get_note(self, note_id: OID) -> Note:
@@ -58,7 +61,7 @@ class MongoManager(DatabaseManager):
         """
         note_q = await self.db.notes.find_one({"_id": ObjectId(note_id)})
         if note_q:
-            return Note(**note_q, id=note_q["_id"])
+            return NoteDB(**note_q, note_id=note_q["_id"])
 
     async def delete_note(self, note_id: OID) -> None:
         """
@@ -75,7 +78,7 @@ class MongoManager(DatabaseManager):
         :param note: New data
         :return:
         """
-        await self.db.notes.update_one({"_id": ObjectId(note_id)}, {"$set": note.dict(exclude={"id"})})
+        await self.db.notes.update_one({"_id": ObjectId(note_id)}, {"$set": note.dict(exclude={"note_id"})})
 
     async def add_note(self, note: Note) -> None:
         """
@@ -83,6 +86,7 @@ class MongoManager(DatabaseManager):
         :param note: Note data
         :return:
         """
-        note_document = note.dict(exclude={"id", "datetime"})
-        note_document["datetime"] = datetime.datetime.now()
-        await self.db.notes.insert_one(note_document)
+        note_document = note.dict()
+        print(note_document)
+        inserted_note = await self.db.notes.insert_one(note_document)
+        return inserted_note.inserted_id

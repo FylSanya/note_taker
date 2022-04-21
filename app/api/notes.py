@@ -23,7 +23,7 @@ async def all_notes(db: DatabaseManager = Depends(get_database)) -> List[Note]:
 @router.get("/{note_id}")
 async def one_note(note_id: OID, db: DatabaseManager = Depends(get_database)) -> Note:
     """
-
+    This route method call db's get_note method and return it.
     :param note_id: Note OID
     :param db: DB manager
     :return:
@@ -35,7 +35,7 @@ async def one_note(note_id: OID, db: DatabaseManager = Depends(get_database)) ->
 @router.put("/{note_id}")
 async def update_note(note_id: OID, note: Note, db: DatabaseManager = Depends(get_database)) -> Note:
     """
-
+    This route method call db's update_note method and return it.
     :param note_id: Note OID
     :param note: Note
     :param db: DB manager
@@ -46,21 +46,21 @@ async def update_note(note_id: OID, note: Note, db: DatabaseManager = Depends(ge
 
 
 @router.post("/", status_code=201)
-async def add_note(note_response: Note, db: DatabaseManager = Depends(get_database)) -> Note:
+async def add_note(note_response: Note, db: DatabaseManager = Depends(get_database)) -> str:
     """
-
+    This route method call db's add_note method and return it.
     :param note_response: Note
     :param db: DB manager
     :return:
     """
-    note = await db.add_note(note_response)
-    return note
+    inserted_note_id = await db.add_note(note_response)
+    return str(inserted_note_id)
 
 
 @router.delete("/{note_id}")
 async def delete_note(note_id: OID, db: DatabaseManager = Depends(get_database)) -> None:
     """
-
+    This route method call db's delete_note method and return it.
     :param note_id: Note OID
     :param db: DB manager
     :return:

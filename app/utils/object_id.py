@@ -8,8 +8,8 @@ class OID(str):
 
     @classmethod
     def validate(cls, v):
-        if v == '':
-            raise TypeError('ObjectId is empty')
+        if v == "":
+            raise TypeError("ObjectId is empty")
         if ObjectId.is_valid(v) is False:
-            raise TypeError('ObjectId invalid')
+            raise TypeError("ObjectId invalid")
         return str(v)

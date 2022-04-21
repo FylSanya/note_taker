@@ -2,7 +2,7 @@
 name = "note_taker"
 version = "0.1.0"
 description = ""
-authors = ["Alexander Babaren <fffulls1zes@gmail.com>"]
+authors = ["Alexander Babaren <sanya.fyl@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"

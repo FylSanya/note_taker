@@ -29,21 +29,21 @@ class MongoManager(DatabaseManager):
         notes_list = []
         notes_q = self.db.notes.find()
         async for note in notes_q:
-            notes_list.append(Note(**note, id=note['_id']))
+            notes_list.append(Note(**note, id=note["_id"]))
         return notes_list
 
     async def get_note(self, note_id: OID) -> Note:
-        note_q = await self.db.notes.find_one({'_id': ObjectId(note_id)})
+        note_q = await self.db.notes.find_one({"_id": ObjectId(note_id)})
         if note_q:
-            return Note(**note_q, id=note_q['_id'])
+            return Note(**note_q, id=note_q["_id"])
 
     async def delete_note(self, note_id: OID):
-        await self.db.notes.delete_one({'_id': ObjectId(note_id)})
+        await self.db.notes.delete_one({"_id": ObjectId(note_id)})
 
     async def update_note(self, note_id: OID, note: Note):
-        await self.db.notes.update_one({'_id': ObjectId(note_id)}, {'$set': note.dict(exclude={'id'})})
+        await self.db.notes.update_one({"_id": ObjectId(note_id)}, {"$set": note.dict(exclude={"id"})})
 
     async def add_note(self, note: Note):
-        note_document = note.dict(exclude={'id', 'datetime'})
+        note_document = note.dict(exclude={"id", "datetime"})
         note_document["datetime"] = datetime.datetime.now()
         await self.db.notes.insert_one(note_document)

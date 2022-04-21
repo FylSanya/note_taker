@@ -6,7 +6,7 @@ from app.api import notes
 
 app = FastAPI()
 
-app.include_router(notes.router, prefix='/api/notes')
+app.include_router(notes.router, prefix="/api/notes")
 
 
 @app.on_event("startup")

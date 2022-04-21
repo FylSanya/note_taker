@@ -2,6 +2,10 @@ from bson import ObjectId
 
 
 class OID(str):
+    """
+    This is class that validates ObjectID
+    """
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate

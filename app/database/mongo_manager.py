@@ -11,21 +11,39 @@ from app.utils.logging import logger
 
 
 class MongoManager(DatabaseManager):
+    """
+    This class in manager for MongoDB.
+    """
+
     client: AsyncIOMotorClient = None
     db: AsyncIOMotorDatabase = None
 
-    async def connect_to_database(self, path: str, name: str):
+    async def connect_to_database(self, path: str, name: str) -> None:
+        """
+        This method connects us to MongoDB
+        :param path: Path to Mongo
+        :param name: Name of DB
+        :return:
+        """
         logger.info("Connecting to MongoDB.")
         self.client = AsyncIOMotorClient(path, maxPoolSize=10, minPoolSize=10)
         self.db = self.client.get_database(name=name)
         logger.info("Connected to MongoDB.")
 
-    async def close_database_connection(self):
+    async def close_database_connection(self) -> None:
+        """
+        This method disconnects us from MongoDB
+        :return:
+        """
         logger.info("Closing connection with MongoDB.")
         self.client.close()
         logger.info("Closed connection with MongoDB.")
 
     async def get_notes(self) -> List[Note]:
+        """
+        This method get all notes from database.
+        :return:
+        """
         notes_list = []
         notes_q = self.db.notes.find()
         async for note in notes_q:
@@ -33,17 +51,38 @@ class MongoManager(DatabaseManager):
         return notes_list
 
     async def get_note(self, note_id: OID) -> Note:
+        """
+        This method get one note from database.
+        :param note_id: Note OID
+        :return:
+        """
         note_q = await self.db.notes.find_one({"_id": ObjectId(note_id)})
         if note_q:
             return Note(**note_q, id=note_q["_id"])
 
-    async def delete_note(self, note_id: OID):
+    async def delete_note(self, note_id: OID) -> None:
+        """
+        This method delete note from database.
+        :param note_id: Note OID
+        :return:
+        """
         await self.db.notes.delete_one({"_id": ObjectId(note_id)})
 
     async def update_note(self, note_id: OID, note: Note):
+        """
+        This method update note.
+        :param note_id: Note OID
+        :param note: New data
+        :return:
+        """
         await self.db.notes.update_one({"_id": ObjectId(note_id)}, {"$set": note.dict(exclude={"id"})})
 
-    async def add_note(self, note: Note):
+    async def add_note(self, note: Note) -> None:
+        """
+        This method add note to database.
+        :param note: Note data
+        :return:
+        """
         note_document = note.dict(exclude={"id", "datetime"})
         note_document["datetime"] = datetime.datetime.now()
         await self.db.notes.insert_one(note_document)

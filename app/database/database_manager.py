@@ -6,6 +6,10 @@ from app.utils.object_id import OID
 
 
 class DatabaseManager:
+    """
+    This class is our abstract DB manager.
+    """
+
     @property
     def client(self):
         raise NotImplementedError

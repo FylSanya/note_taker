@@ -2,20 +2,33 @@ from typing import Optional, List
 
 from datetime import datetime
 
-from app.schemas.base import BaseDBModel
+from pydantic import BaseModel
+
 from app.utils.object_id import OID
 
 
-class ChecklistItem(BaseDBModel):
+class ChecklistItem(BaseModel):
+    """
+    This is class to Checklist Item
+    """
+
     text: str
     is_checked: bool
 
 
-class TextField(BaseDBModel):
+class TextField(BaseModel):
+    """
+    This is class fot text field
+    """
+
     text: str
 
 
-class Note(BaseDBModel):
+class Note(BaseModel):
+    """
+    This is class for note
+    """
+
     id: Optional[OID]
     title: TextField
     text: TextField

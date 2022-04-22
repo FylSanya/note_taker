@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.schemas import Note
+from app.schemas.notes import NoteDB
 from app.utils.object_id import OID
 from app.database import DatabaseManager, get_database
 
@@ -10,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/")
-async def all_notes(db: DatabaseManager = Depends(get_database)) -> List[Note]:
+async def all_notes(db: DatabaseManager = Depends(get_database)) -> List[NoteDB]:
     """
     This route method call db's get_notes method and return it.
     :param db: DB manager
@@ -20,8 +21,20 @@ async def all_notes(db: DatabaseManager = Depends(get_database)) -> List[Note]:
     return notes
 
 
+@router.get("/{filter_query}")
+async def filtered_notes(filter_query: str, db: DatabaseManager = Depends(get_database)) -> List[NoteDB]:
+    """
+    This route method call db's get_notes method and return it.
+    :param filter_query:
+    :param db: DB manager
+    :return:
+    """
+    notes = await db.get_filtered_notes(filter_query)
+    return notes
+
+
 @router.get("/{note_id}")
-async def one_note(note_id: OID, db: DatabaseManager = Depends(get_database)) -> Note:
+async def one_note(note_id: OID, db: DatabaseManager = Depends(get_database)) -> NoteDB:
     """
     This route method call db's get_note method and return it.
     :param note_id: Note OID
@@ -33,7 +46,7 @@ async def one_note(note_id: OID, db: DatabaseManager = Depends(get_database)) ->
 
 
 @router.put("/{note_id}")
-async def update_note(note_id: OID, note: Note, db: DatabaseManager = Depends(get_database)) -> Note:
+async def update_note(note_id: OID, note: Note, db: DatabaseManager = Depends(get_database)) -> NoteDB:
     """
     This route method call db's update_note method and return it.
     :param note_id: Note OID

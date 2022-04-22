@@ -1,13 +1,15 @@
 import uvicorn
 from fastapi import FastAPI
+
 from app.config import get_config
 from app.database import db
-from app.api import notes
+from app.api import notes, templates
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-app.include_router(notes.router, prefix="/api/notes")
+app.include_router(notes.router, prefix="/notes")
+app.include_router(templates.router, prefix="/templates")
 
 origins = ["*"]
 

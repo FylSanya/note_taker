@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
+from starlette import status
+from starlette.responses import JSONResponse
 
 from app.schemas import Note
 from app.schemas.notes import NoteDB
@@ -71,7 +73,7 @@ async def add_note(note_response: Note, db: DatabaseManager = Depends(get_databa
 
 
 @router.delete("/{note_id}")
-async def delete_note(note_id: OID, db: DatabaseManager = Depends(get_database)) -> None:
+async def delete_note(note_id: OID, db: DatabaseManager = Depends(get_database)) -> JSONResponse:
     """
     This route method call db's delete_note method and return it.
     :param note_id: Note OID
@@ -79,3 +81,4 @@ async def delete_note(note_id: OID, db: DatabaseManager = Depends(get_database))
     :return:
     """
     await db.delete_note(note_id=note_id)
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)

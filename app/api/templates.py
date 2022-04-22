@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
+from starlette import status
+from starlette.responses import JSONResponse
 
 from app.schemas.templates import Template, TemplateDB
 from app.utils.object_id import OID
@@ -48,7 +50,7 @@ async def add_template(template_response: Template, db: DatabaseManager = Depend
 
 
 @router.delete("/{template_id}")
-async def delete_template(template_id: OID, db: DatabaseManager = Depends(get_database)) -> None:
+async def delete_template(template_id: OID, db: DatabaseManager = Depends(get_database)) -> JSONResponse:
     """
     This route method call db's delete_template method and return it.
     :param template_id: template OID
@@ -56,6 +58,7 @@ async def delete_template(template_id: OID, db: DatabaseManager = Depends(get_da
     :return:
     """
     await db.delete_template(template_id=template_id)
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{template_id}")

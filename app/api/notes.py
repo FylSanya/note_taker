@@ -35,7 +35,6 @@ class NoteAPI:
         :param filter_query:
         :return:
         """
-        logger.info(filter_query)
         return await self.db.get_filtered_notes(filter_query)
 
     @router.get("/{note_id}")

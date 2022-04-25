@@ -28,7 +28,7 @@ class NoteAPI:
         """
         return await self.db.get_notes()
 
-    @router.get("/{filter_query}")
+    @router.get("/search/{filter_query}")
     async def filtered_notes(self, filter_query: str) -> List[NoteDB]:
         """
         This route method call db's get_notes method and return it.

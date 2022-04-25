@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import pymongo
 from bson import ObjectId
@@ -80,7 +80,7 @@ class MongoManager:
             notes_list.append(NoteDB(**note, note_id=note["_id"]))
         return notes_list
 
-    async def get_note(self, note_id: OID) -> Optional[NoteDB]:
+    async def get_note(self, note_id: OID) -> NoteDB | None:
         """
         This method get one note from database.
         :param note_id: Note OID
@@ -99,16 +99,18 @@ class MongoManager:
         """
         return await self.note_collection.delete_one({"_id": ObjectId(note_id)})
 
-    async def update_note(self, note_id: OID, note: Note):
+    async def update_note(self, note_id: OID, note: Note) -> int:
         """
         This method update note.
         :param note_id: Note OID
         :param note: New data
         :return:
         """
-        return await self.note_collection.update_one(
+        result = await self.note_collection.update_one(
             {"_id": ObjectId(note_id)}, {"$set": note.dict(exclude={"note_id"})}
         )
+
+        return result.matched_count
 
     async def add_note(self, note: Note) -> str:
         """
@@ -142,7 +144,7 @@ class MongoManager:
         inserted_template = await self.template_collection.insert_one(template_document)
         return str(inserted_template.inserted_id)
 
-    async def get_template(self, template_id: OID) -> Optional[TemplateDB]:
+    async def get_template(self, template_id: OID) -> TemplateDB | None:
         """
         This method get one template from database.
         :param template_id: Template OID
@@ -153,7 +155,7 @@ class MongoManager:
             return TemplateDB(**template_q, template_id=template_q["_id"])
         return None
 
-    async def delete_template(self, template_id: OID) -> None:
+    async def delete_template(self, template_id: OID) -> DeleteResult:
         """
         This method delete template from database.
         :param template_id: Template OID
@@ -161,14 +163,16 @@ class MongoManager:
         """
         return await self.template_collection.delete_one({"_id": ObjectId(template_id)})
 
-    async def update_template(self, template_id: OID, template: Template):
+    async def update_template(self, template_id: OID, template: Template) -> int:
         """
         This method update template.
         :param template_id: Template OID
         :param template: New data
         :return:
         """
-        return await self.template_collection.update_one(
+        result = await self.template_collection.update_one(
             {"_id": ObjectId(template_id)},
             {"$set": template.dict(exclude={"template_id"})},
         )
+
+        return result.matched_count

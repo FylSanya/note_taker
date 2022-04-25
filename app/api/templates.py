@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from starlette import status
-from starlette.responses import JSONResponse
+from starlette.responses import Response
 
 from app.database.mongo_manager import MongoManager
 from app.schemas.templates import Template, TemplateDB
@@ -27,7 +27,7 @@ class TemplateAPI:
         return await self.db.get_templates()
 
     @router.get("/{template_id}")
-    async def one_template(self, template_id: OID) -> TemplateDB:
+    async def one_template(self, template_id: OID) -> TemplateDB | None:
         """
         This route method call db's get_template method and return it.
         :param template_id: template OID
@@ -52,14 +52,18 @@ class TemplateAPI:
         :return: JSONResponse
         """
         _ = await self.db.delete_template(template_id=template_id)
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @router.put("/{template_id}")
-    async def update_template(self, template_id: OID, template: Template) -> TemplateDB:
+    async def update_template(self, template_id: OID, template: Template):
         """
         This route method call db's update_template method and return it.
         :param template_id: template OID
         :param template: template
         :return:
         """
-        return await self.db.update_template(template=template, template_id=template_id)
+        matched_count = await self.db.update_template(template=template, template_id=template_id)
+        if matched_count == 0:
+            return Response(status_code=status.HTTP_404_NOT_FOUND)
+        return_result = TemplateDB(**template.dict(), note_id=template_id)
+        return return_result

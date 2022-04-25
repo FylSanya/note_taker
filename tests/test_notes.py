@@ -36,7 +36,6 @@ def test_read_note_incorrect_id(test_app, monkeypatch):
 
     response = test_app.get("api/notes/1")
     assert response.status_code == 422
-    print(response.json())
     assert response.json()["detail"][0]["msg"] == "ObjectId invalid"
 
 
@@ -81,5 +80,4 @@ def test_remove_note(test_app, monkeypatch, test_payload1, test_oid):
 def test_remove_note_incorrect_id(test_app, monkeypatch):
     response = test_app.delete("api/notes/1")
     assert response.status_code == 422
-    print(response.json())
     assert response.json()["detail"][0]["msg"] == "ObjectId invalid"

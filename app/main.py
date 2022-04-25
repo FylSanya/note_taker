@@ -7,6 +7,7 @@ from app.api import notes, templates
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+config = get_config()
 
 app.include_router(notes.router, prefix="/notes")
 app.include_router(templates.router, prefix="/templates")
@@ -24,7 +25,6 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    config = get_config()
     await db.connect_to_database(path=config.db_path, name=config.db_name)
 
 
@@ -34,4 +34,4 @@ async def shutdown():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=config.host, port=config.port)

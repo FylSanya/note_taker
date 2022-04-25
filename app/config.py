@@ -37,6 +37,8 @@ class Config(BaseSettings):
     app_name: str = "Notetaker API"
     db_path: str
     db_name: str
+    host: str
+    port: int
 
     class Config:
         env_file = ".env"

@@ -49,7 +49,7 @@ class TemplateAPI:
         """
         This route method call db's delete_template method and return it.
         :param template_id: template OID
-        :return: JSONResponse
+        :return: Response 204
         """
         _ = await self.db.delete_template(template_id=template_id)
         return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -7,7 +7,6 @@ from starlette.responses import Response
 from app.database.mongo_manager import MongoManager
 from app.schemas import Note
 from app.schemas.notes import NoteDB
-from app.utils.logging import logger
 from app.utils.object_id import OID
 from app.database import get_database
 from fastapi_utils.cbv import cbv

@@ -21,7 +21,7 @@ class TemplateAPI:
     @router.get("/")
     async def all_templates(self) -> List[TemplateDB]:
         """
-        This route method call db's get_notes method and return it.
+        This route method call db's get_templates method and return it.
         :return:
         """
         return await self.db.get_templates()
@@ -65,5 +65,5 @@ class TemplateAPI:
         matched_count = await self.db.update_template(template=template, template_id=template_id)
         if matched_count == 0:
             return Response(status_code=status.HTTP_404_NOT_FOUND)
-        return_result = TemplateDB(**template.dict(), note_id=template_id)
+        return_result = TemplateDB(**template.dict(), template_id=template_id)
         return return_result

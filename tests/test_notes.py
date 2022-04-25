@@ -17,13 +17,13 @@ def test_add_note_invalid_json(test_app):
     assert response.status_code == 422
 
 
-def test_get_note(test_app, monkeypatch, test_note_db, test_oid):
+def test_get_note(test_app, monkeypatch, test_note_db, test_note_oid):
     async def mock_get(self, note_id):
         return test_note_db
 
     monkeypatch.setattr("app.database.MongoManager.get_note", mock_get)
 
-    response = test_app.get(f"/notes/{test_oid}")
+    response = test_app.get(f"/notes/{test_note_oid}")
     assert response.status_code == 200
     assert response.json() == test_note_db
 
@@ -55,24 +55,24 @@ def test_read_all_notes(test_app, monkeypatch, test_note_db, test_note_db_1):
     assert response.json() == test_data
 
 
-def test_update_note(test_app, monkeypatch, test_note, test_note_db, test_oid):
+def test_update_note(test_app, monkeypatch, test_note, test_note_db, test_note_oid):
     async def mock_put(self, note_id, note):
         return test_note
 
     monkeypatch.setattr("app.database.MongoManager.update_note", mock_put)
 
-    response = test_app.put(f"/notes/{test_oid}", data=json.dumps(test_note))
+    response = test_app.put(f"/notes/{test_note_oid}", data=json.dumps(test_note))
     assert response.status_code == 200
     assert response.json() == test_note_db
 
 
-def test_remove_note(test_app, monkeypatch, test_oid):
+def test_remove_note(test_app, monkeypatch, test_note_oid):
     async def mock_delete(self, note_id):
         return None
 
     monkeypatch.setattr("app.database.MongoManager.delete_note", mock_delete)
 
-    response = test_app.delete(f"/notes/{test_oid}")
+    response = test_app.delete(f"/notes/{test_note_oid}")
     assert response.status_code == 204
 
 

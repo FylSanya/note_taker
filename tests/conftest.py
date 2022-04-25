@@ -1,18 +1,7 @@
 import pytest
 from starlette.testclient import TestClient
 
-from app.config import get_config
-from app.database import db, get_database
 from app.main import app
-
-
-config = get_config()
-
-
-@pytest.fixture(scope="module")
-async def database(db_path, db_name):
-    await db.connect_to_database(path=config.db_path, name=config.db_name)
-    return await get_database()
 
 
 @pytest.fixture(scope="module")
@@ -22,7 +11,7 @@ def test_app():
 
 
 @pytest.fixture(scope="module")
-def test_oid():
+def test_note_oid():
     return "6260537e600a744e22523260"
 
 
@@ -55,4 +44,35 @@ def test_note_db_1():
         "body": "text_data2",
         "created": "2022-04-25T13:20:29.768000+00:00",
         "modified": "2022-04-25T13:20:29.768000+00:00",
+    }
+
+
+@pytest.fixture(scope="module")
+def test_template_oid():
+    return "6260537e600a744e22523264"
+
+
+@pytest.fixture(scope="module")
+def test_template():
+    return {
+        "title": "template_data",
+        "body": "template_body",
+    }
+
+
+@pytest.fixture(scope="module")
+def test_template_db():
+    return {
+        "template_id": "6260537e600a744e22523264",
+        "title": "template_data",
+        "body": "template_body",
+    }
+
+
+@pytest.fixture(scope="module")
+def test_template_db_1():
+    return {
+        "template_id": "6260537e600a744e22523266",
+        "title": "template_data",
+        "body": "template_body",
     }

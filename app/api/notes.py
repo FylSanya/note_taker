@@ -28,13 +28,14 @@ class NoteAPI:
         """
         return await self.db.get_notes()
 
-    @router.get("/search/{filter_query}")
-    async def filtered_notes(self, filter_query: str) -> List[NoteDB]:
+    @router.get("/search/{filter_query}/")
+    async def filtered_notes(self, filter_query: str | None) -> List[NoteDB]:
         """
         This route method call db's get_notes method and return it.
         :param filter_query:
         :return:
         """
+        logger.info(filter_query)
         return await self.db.get_filtered_notes(filter_query)
 
     @router.get("/{note_id}")

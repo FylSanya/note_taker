@@ -1,6 +1,5 @@
-from typing import List, Optional, Tuple
+from typing import List
 
-import pymongo
 from bson import ObjectId
 from motor import MotorCollection
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
@@ -62,20 +61,23 @@ class MongoManager:
         # we can't do this because of AsyncIOMotorCursor object is not iterable
         # return [NoteDB(**note, note_id=note["_id"]) for note in notes_q]
 
-    async def get_filtered_notes(self, filter_query: str) -> List[NoteDB]:
+    async def get_filtered_notes(self, filter_query: str | None) -> List[NoteDB]:
         """
         This method get filtered notes from database.
         :return:
         """
         notes_list = []
-        notes_q = self.note_collection.find(
-            {
-                "$text": {
-                    "$search": filter_query,
-                    "$caseSensitive": False,
+        if filter_query:
+            notes_q = self.note_collection.find(
+                {
+                    "$text": {
+                        "$search": filter_query,
+                        "$caseSensitive": False,
+                    }
                 }
-            }
-        )
+            )
+        else:
+            notes_q = self.note_collection.find()
         async for note in notes_q:
             notes_list.append(NoteDB(**note, note_id=note["_id"]))
         return notes_list
